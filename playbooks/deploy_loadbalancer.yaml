@@ -2,4 +2,10 @@
   hosts: localhost
   tasks:
     - name: Lancer le conteneur Load Balancer
-      command: docker run -d --name vnf-lb -p 9090:80 haproxytech/haproxy-alpine
+      command: >
+        docker run -d 
+        --name vnf-lb 
+        --network net-chain 
+        -p 9090:80 
+        -v /home/olivier/Documents/TP_Reseaux_Orchestration/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+        haproxytech/haproxy-alpine

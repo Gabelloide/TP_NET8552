@@ -1,6 +1,6 @@
 services:
   firewall:
-    image: wallarm/api-firewall
+    image: "alpine/socat" 
     container_name: vnf-firewall
     ports:
     - "8080:8080"

@@ -2,4 +2,4 @@
   hosts: localhost
   tasks:
     - name: Lancer le conteneur Web Server
-      command: docker run -d --name vnf-web -p 8081:80 nginx
+      command: docker run -d --name vnf-web --network net-chain -p 8081:80 nginx

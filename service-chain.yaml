@@ -4,12 +4,23 @@ description: >
   Chaîne de services réseau : Firewall -> Load Balancer -> Web Server
   orchestrée avec xOpera.
 
+# On définit un type personnalisé pour contourner l'obligation d'avoir un "host"
+node_types:
+  my.nodes.App:
+    derived_from: tosca.nodes.Root
+    requirements:
+      - dependency:
+          capability: tosca.capabilities.Node
+          relationship: tosca.relationships.DependsOn
+          occurrences: [0, UNBOUNDED]
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+
 topology_template:
   node_templates:
     Firewall:
-      type: tosca.nodes.Container.Application
-      properties:
-        image: "wallarm/api-firewall"
+      type: my.nodes.App
       interfaces:
         Standard:
           operations:
@@ -17,9 +28,7 @@ topology_template:
               implementation: playbooks/deploy_firewall.yaml
 
     LoadBalancer:
-      type: tosca.nodes.Container.Application
-      properties:
-        image: "haproxytech/haproxy-alpine"
+      type: my.nodes.App
       requirements:
         - dependency: Firewall
       interfaces:
@@ -29,9 +38,7 @@ topology_template:
               implementation: playbooks/deploy_loadbalancer.yaml
 
     WebServer:
-      type: tosca.nodes.Container.Application
-      properties:
-        image: "nginx"
+      type: my.nodes.App
       requirements:
         - dependency: LoadBalancer
       interfaces:
