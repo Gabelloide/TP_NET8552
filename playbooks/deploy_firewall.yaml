@@ -1,0 +1,5 @@
+-name: Déploiement du VNF Firewall
+  hosts: localhost
+  tasks:
+    - name: Lancer le conteneur Firewall
+      command: docker run -d --name vnf-firewall -p 8080:8080 wallarm/api-firewall

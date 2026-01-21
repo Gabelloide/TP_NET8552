@@ -1,0 +1,5 @@
+- name: Déploiement du VNF Load Balancer
+  hosts: localhost
+  tasks:
+    - name: Lancer le conteneur Load Balancer
+      command: docker run -d --name vnf-lb -p 9090:80 haproxytech/haproxy-alpine

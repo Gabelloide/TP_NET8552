@@ -1,0 +1,32 @@
+services:
+  firewall:
+    image: wallarm/api-firewall
+    container_name: vnf-firewall
+    ports:
+    - "8080:8080"
+    networks:
+    - net-chain
+
+  loadbalancer:
+    image: haproxytech/haproxy-alpine
+    container_name: vnf-lb
+    ports:
+    - "9090:80"
+    depends_on:
+    - firewall
+    networks:
+    - net-chain
+
+  webserver:
+    image: nginx
+    container_name: vnf-web
+    ports:
+    - "8081:80"
+    depends_on:
+    - loadbalancer
+    networks:
+    - net-chain
+
+networks:
+  net-chain:
+    driver: bridge

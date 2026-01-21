@@ -1,0 +1,41 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+description: >
+  Chaîne de services réseau : Firewall -> Load Balancer -> Web Server
+  orchestrée avec xOpera.
+
+topology_template:
+  node_templates:
+    Firewall:
+      type: tosca.nodes.Container.Application
+      properties:
+        image: "wallarm/api-firewall"
+      interfaces:
+        Standard:
+          operations:
+            create:
+              implementation: playbooks/deploy_firewall.yaml
+
+    LoadBalancer:
+      type: tosca.nodes.Container.Application
+      properties:
+        image: "haproxytech/haproxy-alpine"
+      requirements:
+        - dependency: Firewall
+      interfaces:
+        Standard:
+          operations:
+            create:
+              implementation: playbooks/deploy_loadbalancer.yaml
+
+    WebServer:
+      type: tosca.nodes.Container.Application
+      properties:
+        image: "nginx"
+      requirements:
+        - dependency: LoadBalancer
+      interfaces:
+        Standard:
+          operations:
+            create:
+              implementation: playbooks/deploy_webserver.yaml
